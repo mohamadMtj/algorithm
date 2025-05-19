@@ -16,17 +16,6 @@ class BST:
             return 0
         return 1 + this.node_counter(node.left) + this.node_counter(node.right)
 
-    def _print_in_order(this, node):
-        if node:
-            this._print_in_order(node.left)
-            print(f"ID: {node.id}, Name: {node.name}")
-            this._print_in_order(node.right)
-
-    def _print_preorder(this, node):
-        if node:
-            print(f"ID: {node.id}, Name: {node.name}")
-            this._print_preorder(node.left)
-            this._print_preorder(node.right)
 
     def contains_id(this, id):
         pointer = this.root
@@ -119,6 +108,19 @@ class BST:
             print("BST is empty.")
         else:
             this._print_preorder(this.root)
+            
+            
+    def _print_in_order(this, node):
+        if node:
+            this._print_in_order(node.left)
+            print(f"ID: {node.id}, Name: {node.name}")
+            this._print_in_order(node.right)
+
+    def _print_preorder(this, node):
+        if node:
+            print(f"ID: {node.id}, Name: {node.name}")
+            this._print_preorder(node.left)
+            this._print_preorder(node.right)
 
     def is_empty_bst(this):
         return this.root is None
@@ -147,8 +149,8 @@ class MaxHeap:
     def _heapify_down(this, idx):
         size = len(this.heap)
         largest = idx
-        left = 2 * idx + 1
-        right = 2 * idx + 2
+        left = 2 * idx 
+        right = 2 * idx + 1
 
         if left < size and this.heap[left]['priority'] > this.heap[largest]['priority']:
             largest = left
@@ -277,14 +279,21 @@ def main():
 
     while True:
         choice = display_menu()
-
+        
+        
+        
         if choice == '1':
             id = int(input("Enter request ID: "))
             name = input("Enter user name: ")
             priority = int(input("Enter request priority: "))
-            bst.add_node_to_bst(id, name)
-            heap.insert_heap(id, priority)
-            print("Request successfully inserted!")
+
+            if bst.contains_id(id):
+                print(f"❌ Request ID {id} already exists. Try a different ID.")
+            else:
+                bst.add_node_to_bst(id, name)
+                heap.insert_heap(id, priority)
+                print("✅ Request successfully inserted!")
+
 
         elif choice == '2':
             id = int(input("Enter request ID to delete: "))
@@ -341,5 +350,6 @@ def main():
         else:
             print("Invalid option! Please try again.")
             
+
 
 if "__main__" == __name__: main()
