@@ -332,6 +332,12 @@ def deleteRequest():
 
 def printPreorder():
     bst.print_bst_preorder()
+    
+def processRequest():
+    while True:
+        heap.process_highest_priority_request(bst)
+        if input("\nPress [R] to return or [Enter] to continue: ").lower() == 'r':
+            break    
 
 
 while True:
@@ -351,6 +357,8 @@ while True:
         deleteRequest()
     elif option == 7:
         printPreorder()
+    elif option ==8 :
+        processRequest()
     else:
         print("Goodbye!")
         break
