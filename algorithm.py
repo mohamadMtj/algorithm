@@ -334,14 +334,6 @@ def printPreorder():
     bst.print_bst_preorder()
 
 
-def visualize():
-    print("\n========= SYSTEM OVERVIEW =========")
-    bst.print_bst()
-    print()
-    heap.display_heap()
-    print("===================================")
-
-
 while True:
     option = selectOption()
     print()
@@ -359,8 +351,6 @@ while True:
         deleteRequest()
     elif option == 7:
         printPreorder()
-    elif option == 8:
-        visualize()
     else:
         print("Goodbye!")
         break
