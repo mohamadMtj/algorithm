@@ -1,4 +1,5 @@
 
+
 class BSTNode:
     def __init__(this, id, name):
         this.id = id
@@ -16,6 +17,17 @@ class BST:
             return 0
         return 1 + this.node_counter(node.left) + this.node_counter(node.right)
 
+    def _print_in_order(this, node):
+        if node:
+            this._print_in_order(node.left)
+            print(f"ID: {node.id}, Name: {node.name}")
+            this._print_in_order(node.right)
+
+    def _print_preorder(this, node):
+        if node:
+            print(f"ID: {node.id}, Name: {node.name}")
+            this._print_preorder(node.left)
+            this._print_preorder(node.right)
 
     def contains_id(this, id):
         pointer = this.root
@@ -87,8 +99,6 @@ class BST:
     def remove_node_by_id(this, id):
         this.root = this._delete_node(this.root, id)
 
-    
-
     def find_min_node(this, node):
         pointer = node
         while pointer.left:
@@ -108,19 +118,6 @@ class BST:
             print("BST is empty.")
         else:
             this._print_preorder(this.root)
-            
-            
-    def _print_in_order(this, node):
-        if node:
-            this._print_in_order(node.left)
-            print(f"ID: {node.id}, Name: {node.name}")
-            this._print_in_order(node.right)
-
-    def _print_preorder(this, node):
-        if node:
-            print(f"ID: {node.id}, Name: {node.name}")
-            this._print_preorder(node.left)
-            this._print_preorder(node.right)
 
     def is_empty_bst(this):
         return this.root is None
@@ -149,7 +146,7 @@ class MaxHeap:
     def _heapify_down(this, idx):
         size = len(this.heap)
         largest = idx
-        left = 2 * idx 
+        left = 2 * idx
         right = 2 * idx + 1
 
         if left < size and this.heap[left]['priority'] > this.heap[largest]['priority']:
@@ -231,125 +228,140 @@ class MaxHeap:
         return len(this.heap)
 
 
-def show_display(bst, heap):
-    print("\n========= SYSTEM OVERVIEW =========")
-    print("BST Requests:")
+
+def selectOption():
+    menuItems = '''\nHOW CAN I HELP YOU?\n
+1) View all requests
+2) Insert request
+3) Increase priority
+4) Process request
+5) Search request
+6) Delete request
+7) Print BST (Preorder)
+8) Visualize system overview
+9) Exit'''
+    print(menuItems)
+    while True:
+        choice = input("\nEnter your choice (1-9): ")
+        if choice.isdigit() and 1 <= int(choice) <= 9:
+            return int(choice)
+        else:
+            print("Invalid, try again.")
+
+
+def getValue(mode):
+    while True:
+        try:
+            value = int(input(f"Enter {mode} (as a number): "))
+            return value
+        except ValueError:
+            print(f"Invalid input. Please enter a numeric value for {mode}.")
+
+
+bst = BST()
+heap = MaxHeap()
+
+list_data = [
+    (1, "mohamad", 60),
+    (2, "ali", 40),
+    (3, "arash", 80),
+    (4, "poya", 70),
+    (5, "hani", 100)
+]
+for id, name, priority in list_data:
+    bst.add_node_to_bst(id, name)
+    heap.insert_heap(id, priority)
+
+
+def viewRequests():
     bst.print_bst()
-    print("\nMaxHeap Requests:")
+    heap.display_heap()
+
+
+def insertRequest():
+    while True:
+        name = input("Enter request name: ")
+        id = getValue("request ID")
+        priority = getValue("priority")
+        if bst.contains_id(id):
+            print(f"\n❌ Request ID {id} already exists.")
+        else:
+            bst.add_node_to_bst(id, name)
+            heap.insert_heap(id, priority)
+            print("\n✅ Request inserted.")
+        if input("\nPress [R] to return or [Enter] to insert another: ").lower() == 'r':
+            break
+
+
+def increasePriority():
+    while True:
+        id = getValue("request ID")
+        priority = getValue("new priority")
+        heap.increase_priority(id, priority)
+        if input("\nPress [R] to return or [Enter] to continue: ").lower() == 'r':
+            break
+
+
+def processRequest():
+    while True:
+        heap.process_highest_priority_request(bst)
+        if input("\nPress [R] to return or [Enter] to continue: ").lower() == 'r':
+            break
+
+
+def searchRequest():
+    while True:
+        id = getValue("request ID")
+        result = bst.find_by_id(id)
+        if result:
+            print(f"\nRequest found: {result.name}")
+        else:
+            print("\nRequest not found.")
+        if input("\nPress [R] to return or [Enter] to search again: ").lower() == 'r':
+            break
+
+
+def deleteRequest():
+    while True:
+        id = getValue("request ID")
+        bst.remove_node_by_id(id)
+        heap.delete_from_heap(id)
+        if input("\nPress [R] to return or [Enter] to delete another: ").lower() == 'r':
+            break
+
+
+def printPreorder():
+    bst.print_bst_preorder()
+
+
+def visualize():
+    print("\n========= SYSTEM OVERVIEW =========")
+    bst.print_bst()
+    print()
     heap.display_heap()
     print("===================================")
 
 
-def display_menu():
-    print("\n=================================")
-    print("  REQUEST MANAGEMENT SYSTEM")
-    print("=================================")
-    print("1. Insert a new request")
-    print("2. Delete request from BST")
-    print("3. Search request in BST")
-    print("4. Print BST (In-order)")
-    print("5. Print BST (Pre-order)  ")
-    print("6. Print MaxHeap")
-    print("7. Process highest priority request")
-    print("8. Increase priority of a request")
-    print("9. Check if BST is empty")
-    print("10. Check if Heap is empty")
-    print("11. Get size of BST")
-    print("12. Get size of Heap")
-    print("13. Show system overview")
-    print("14. Delete highest priority request   ")
-    print("15. Exit")
-    return input("Choose an option: ")
-
-
-def main():
-    bst = BST()
-    heap = MaxHeap()
-
-    list_data = [
-        (1, "mohamad", 60),
-        (2, "ali", 40),
-        (3, "arash", 80),
-        (4, "poya", 70),
-        (5, "hani", 100)
-    ]
-    for id, name, priority in list_data:
-        bst.add_node_to_bst(id, name)
-        heap.insert_heap(id, priority)
-
-    while True:
-        choice = display_menu()
-        
-        
-        
-        if choice == '1':
-            id = int(input("Enter request ID: "))
-            name = input("Enter user name: ")
-            priority = int(input("Enter request priority: "))
-
-            if bst.contains_id(id):
-                print(f"❌ Request ID {id} already exists. Try a different ID.")
-            else:
-                bst.add_node_to_bst(id, name)
-                heap.insert_heap(id, priority)
-                print("✅ Request successfully inserted!")
-
-
-        elif choice == '2':
-            id = int(input("Enter request ID to delete: "))
-            bst.remove_node_by_id(id)
-            heap.delete_from_heap(id)
-
-        elif choice == '3':
-            id = int(input("Enter request ID to search: "))
-            result = bst.find_by_id(id)
-            if result:
-                print(f"Request found - ID: {result.id}, Name: {result.name}")
-            else:
-                print("Request not found!")
-
-        elif choice == '4':
-            bst.print_bst()
-
-        elif choice == '5':
-            bst.print_bst_preorder()
-
-        elif choice == '6':
-            heap.display_heap()
-
-        elif choice == '7':
-            heap.process_highest_priority_request(bst)
-
-        elif choice == '8':
-            id = int(input("Enter request ID to increase priority: "))
-            new_priority = int(input("Enter new priority: "))
-            heap.increase_priority(id, new_priority)
-
-        elif choice == '9':
-            print("BST is empty." if bst.is_empty_bst() else "BST is not empty.")
-
-        elif choice == '10':
-            print("Heap is empty." if heap.is_empty_heap() else "Heap is not empty.")
-
-        elif choice == '11':
-            print(f"BST contains {bst.size_bst()} nodes.")
-
-        elif choice == '12':
-            print(f"Heap contains {heap.size_max_heap()} elements.")
-
-        elif choice == '13':
-            show_display(bst, heap)
-
-        elif choice == '14':
-            heap.delete_max_heap()
-
-        elif choice == '15':
-            print("Exiting program...")
-            break
-
-        else:
-            print("Invalid option! Please try again.")
-            
-
-
-if "__main__" == __name__: main()
+while True:
+    option = selectOption()
+    print()
+    if option == 1:
+        viewRequests()
+    elif option == 2:
+        insertRequest()
+    elif option == 3:
+        increasePriority()
+    elif option == 4:
+        processRequest()
+    elif option == 5:
+        searchRequest()
+    elif option == 6:
+        deleteRequest()
+    elif option == 7:
+        printPreorder()
+    elif option == 8:
+        visualize()
+    else:
+        print("Goodbye!")
+        break
+    input("\nPress [Enter] to continue...")
